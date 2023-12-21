@@ -15,23 +15,6 @@ const useExchangeRates = () => {
     },
     convertedAmount: null,
   });
-  const useCurrencyConversion = (amount, fromCurrency, toCurrency) => {
-    useEffect(() => {
-      const calculateConvertedAmount = () => {
-        const result =
-          (amount / currencyRates.exchangeRates[fromCurrency]) *
-          currencyRates.exchangeRates[toCurrency];
-        setCurrencyRates(prevState => ({
-          ...prevState,
-          convertedAmount: result.toFixed(2),
-        }));
-      };
-
-      calculateConvertedAmount();
-    }, [amount, fromCurrency, toCurrency, currencyRates]);
-
-    return currencyRates.convertedAmount;
-  };
 
   useEffect(() => {
     const fetchExchangeRates = async () => {
@@ -62,6 +45,14 @@ const useExchangeRates = () => {
 
     fetchExchangeRates();
   }, []);
+
+  const useCurrencyConversion = (amount, fromCurrency, toCurrency) => {
+    const result =
+      (amount / currencyRates.exchangeRates[fromCurrency]) *
+      currencyRates.exchangeRates[toCurrency];
+    const convertedAmount = result.toFixed(2);
+    return convertedAmount;
+  };
 
   return {
     exchangeRates: currencyRates.exchangeRates,
