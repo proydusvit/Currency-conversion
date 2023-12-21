@@ -7,7 +7,5 @@
   "trailingComma": "all",
   "bracketSpacing": true,
   "arrowParens": "avoid",
-  "proseWrap": "always",
-  "plugins": ["prettier-plugin-tailwindcss"],
-  "tailwindFunctions": ["cn"]
+  "proseWrap": "always"
 }
