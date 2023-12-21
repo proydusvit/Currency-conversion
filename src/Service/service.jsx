@@ -1,18 +1,37 @@
 import { useState, useEffect } from 'react';
 
 const useExchangeRates = () => {
-  const [exchangeRates, setExchangeRates] = useState({
-    USD: 1,
-    EUR: 1,
-    UAH: 1,
-    ZLT: 1,
+  const [currencyRates, setCurrencyRates] = useState({
+    exchangeRates: {
+      USD: 1,
+      EUR: 1,
+      UAH: 1,
+      ZLT: 1,
+    },
+    rateBuy: {
+      USD: 1,
+      EUR: 1,
+      UAH: 1,
+    },
+    convertedAmount: null,
   });
+  const useCurrencyConversion = (amount, fromCurrency, toCurrency) => {
+    useEffect(() => {
+      const calculateConvertedAmount = () => {
+        const result =
+          (amount / currencyRates.exchangeRates[fromCurrency]) *
+          currencyRates.exchangeRates[toCurrency];
+        setCurrencyRates(prevState => ({
+          ...prevState,
+          convertedAmount: result.toFixed(2),
+        }));
+      };
 
-  const [rateBuy, setRateBuy] = useState({
-    USD: 1,
-    EUR: 1,
-    UAH: 1,
-  });
+      calculateConvertedAmount();
+    }, [amount, fromCurrency, toCurrency, currencyRates]);
+
+    return currencyRates.convertedAmount;
+  };
 
   useEffect(() => {
     const fetchExchangeRates = async () => {
@@ -21,18 +40,21 @@ const useExchangeRates = () => {
         const data = await response.json();
         const zltfilter = data.find(currency => currency.currencyCodeA === 985);
 
-        setExchangeRates({
-          USD: data[0].rateSell,
-          EUR: data[1].rateSell,
-          UAH: 1,
-          ZLT: zltfilter.rateCross,
-        });
+        const updatedRates = {
+          exchangeRates: {
+            USD: data[0].rateSell,
+            EUR: data[1].rateSell,
+            UAH: 1,
+            ZLT: zltfilter.rateCross,
+          },
+          rateBuy: {
+            USD: data[0].rateBuy,
+            EUR: data[1].rateBuy,
+            UAH: 1,
+          },
+        };
 
-        setRateBuy({
-          USD: data[0].rateBuy,
-          EUR: data[1].rateBuy,
-          UAH: 1,
-        });
+        setCurrencyRates(updatedRates);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -41,7 +63,11 @@ const useExchangeRates = () => {
     fetchExchangeRates();
   }, []);
 
-  return { exchangeRates, rateBuy };
+  return {
+    exchangeRates: currencyRates.exchangeRates,
+    rateBuy: currencyRates.rateBuy,
+    useCurrencyConversion,
+  };
 };
 
 export default useExchangeRates;

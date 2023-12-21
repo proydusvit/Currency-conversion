@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 import useExchangeRates from './Service/service';
 
@@ -12,15 +12,13 @@ const CurrencyConverter = () => {
   const [toCurrency, setToCurrency] = useState('UAH');
 
   const [amount, setAmount] = useState(1);
-  const [convertedAmount, setConvertedAmount] = useState();
 
-  const { exchangeRates, rateBuy } = useExchangeRates();
-
-  useEffect(() => {
-    const result =
-      (amount / exchangeRates[fromCurrency]) * exchangeRates[toCurrency];
-    setConvertedAmount(result.toFixed(2));
-  }, [amount, fromCurrency, toCurrency, exchangeRates]);
+  const { exchangeRates, rateBuy, useCurrencyConversion } = useExchangeRates();
+  const convertedAmount = useCurrencyConversion(
+    amount,
+    fromCurrency,
+    toCurrency,
+  );
 
   const handleFromCurrencyChange = e => {
     setFromCurrency(e.target.value);

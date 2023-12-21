@@ -1,5 +1,6 @@
 import styles from '../../CurrencyConverter.module.scss';
-import currencyList from '../CurrencyList//currencyList.json';
+import currencyList from './currencyList.json';
+import CurrencyInput from './CurrencyInput';
 const Converter = ({
   toCurrency,
   handleToCurrencyChange,
@@ -12,22 +13,18 @@ const Converter = ({
     <>
       <h2>Конвертер валют</h2>
       <div className={styles.conversion_section}>
-        <label>З валюти:</label>
-        <select value={toCurrency} onChange={handleToCurrencyChange}>
-          {currencyList.map(({ name }, index) => (
-            <option key={index} value={name}>
-              {name}
-            </option>
-          ))}
-        </select>
-        <label>До валюти:</label>
-        <select value={fromCurrency} onChange={handleFromCurrencyChange}>
-          {currencyList.map(({ name }, index) => (
-            <option key={index} value={name}>
-              {name}
-            </option>
-          ))}
-        </select>
+        <CurrencyInput
+          label="З валюти:"
+          value={toCurrency}
+          onChange={handleToCurrencyChange}
+          options={currencyList.map(({ name }) => name)}
+        />
+        <CurrencyInput
+          label="До валюти:"
+          value={fromCurrency}
+          onChange={handleFromCurrencyChange}
+          options={currencyList.map(({ name }) => name)}
+        />
 
         <div>
           <label>Сума:</label>
